@@ -53,7 +53,7 @@ if __name__ == '__main__':
         print('no se puede conectar con el arduino')
     time.sleep(1.0)
     
-    nombreArchivo = '/home/darkfarmbot/Desktop/darkFarmbot/SensorDeHumedad.csv'
+    nombreArchivo = '/./gcode/SensorDeHumedad.csv'
     leerArchivos(nombreArchivo)
     x = int(input('valor x: '))
     y = int(input('valor y: '))

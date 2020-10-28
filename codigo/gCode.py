@@ -37,7 +37,7 @@ if __name__ == '__main__':
         print('No se pudo conectar al arduino')
 
     filename = input('Nombre del archivo Gcode: ')
-    filename = 'Desktop/darkFarmbot/gcode/' + filename + '.csv'
+    filename = './gcode/' + filename + '.csv'
     #thread = Thread(target=leerDatos)
     #thread.start()
     ejecutarGcode()
