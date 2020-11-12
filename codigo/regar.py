@@ -38,7 +38,7 @@ if __name__ == '__main__':
         print('No se pudo conectar al arduino')
 
     filename = 'regar'
-    filename = './gcode/' + filename + '.csv'
+    filename = 'Desktop/darkFarmbot/gcode/' + filename + '.csv'
     time.sleep(1.0)
     while isRun:
         horaActual = datetime.datetime.now().strftime('%H:%M')

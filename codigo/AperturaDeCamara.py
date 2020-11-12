@@ -3,6 +3,7 @@ import cv2
 import os
 
 cap = cv2.VideoCapture(0)#identificador de la camara
+cap.set(cv2.CAP_PROP_AUTOFOCUS,0)
 while (True):
  	#capturar frame por frame
  	ret,frame = cap.read()
