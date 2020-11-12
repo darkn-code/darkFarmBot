@@ -20,7 +20,7 @@ def IrAPosicion(pos):
     return posicion
 
 
-def realizarMovimiento(movimiento):
+def realizarMovimiento(arduino,movimiento):
     arduino.write(movimiento.encode())
     arduino.reset_input_buffer()
     data = 'R00'
@@ -52,11 +52,11 @@ if __name__ == '__main__':
     thread.start()
 
     num_planta = 0
-    realizarMovimiento('G0 X100\r\n')
+    realizarMovimiento(arduino,'G0 X100\r\n')
     
     for planta in plantas:
         posNueva = IrAPosicion(planta)
-        realizarMovimiento(posNueva)
+        realizarMovimiento(arduino,posNueva)
         num_planta += 1
         path = '/home/darkfarmbot/Desktop/darkFarmbot/imagenes/'
         nombre = 'planta_' + str(num_planta) + '-' + datetime.datetime.now().strftime('%d-%m-%y') + '.jpg'
@@ -64,8 +64,8 @@ if __name__ == '__main__':
         nombre = path + nombre
         cv2.imwrite(nombre,frame)
 
-    realizarMovimiento('G0 X100\r\n')
-    realizarMovimiento('G0\r\n')
+    realizarMovimiento(arduino,'G0 X100\r\n')
+    realizarMovimiento(arduino,'G0\r\n')
     isRun = False
     thread.join()
     cv2.destroyAllWindows

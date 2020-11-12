@@ -4,9 +4,6 @@ import time
 import glob
 import serial
 from threading import Thread
-from tomarImagen import IrAPosicion
-from tomarImatgen import realizarMovimiento
-
 
 def video():
     global frame
@@ -24,8 +21,9 @@ def calibrarCamara(path):
     
     objp = np.zeros((6*7,3),np.float32)
     objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
-    
+    global gris 
     images = glob.glob(path)
+    print(images)
     objpoints = []
     imgpoints = []
     for image in images:
@@ -57,44 +55,59 @@ def resultadoCalibrado(imageName,path,isUndistort,mtx,dist):
     cv.imwrite(imageName, dst)
 
 
+def realizarMovimiento(arduino,movimiento):
+    arduino.write(movimiento.encode())
+    arduino.reset_input_buffer()
+    data = 'R00'
+    while data[0:3] != 'R02':
+        arduinoString = arduino.readline()
+        data = arduinoString.decode('utf-8',errors='replace')
+        print(data)
+
+def IrAPosicion(pos):
+    posicion = 'G0 X' + str(pos[0]) +' Y'+ str(pos[1]) +' Z' + str(pos[2]) +'\r\n'
+    return posicion
+
 
 if __name__ == '__main__':
+    global arduino
     isRun = True
-    thread = Thread(target=video)
-    thread.start()
     port = '/dev/ttyACM0'
-    baud = 115200i
-    posiciones = [[450,300,300],[450,450,300],[450,150,300],[600,300,300],[300,300,300]]
+    baud = 115200
+    posiciones = [[450,300,200],[450,450,200],[450,150,200],[600,300,200],[300,300,200]]
     try:
         arduino = serial.Serial(port,baud)
     except:
         print('no se puede conectar')
         IsRun = False
-
-    posInit = IrAPosicion([0,0,300])
-    realizarMovimiento(posInit)
-    posCalibracion = IrAPosicion([450,300,300])
-    realizarMovimiento(posCalibracion)
-    IsReady = input('Esta listo? ')
+    time.sleep(1)
+    thread = Thread(target=video)
+    thread.start()
+    #posInit = IrAPosicion([0,0,200])
+    #realizarMovimiento(arduino,posInit)
+    #posCalibracion = IrAPosicion([450,300,200])
+    #realizarMovimiento(arduino,posCalibracion)
+    IsReady = 'y'
     num = 0
     if IsReady == 'y':
-        path = '/home/darkfarmbot/Desktop/darkFarmbot/calibarParametros/'
-        for posicion in posiciones:
-            pos = IrAPosicion(posicion)
-            realizarMovimiento(pos)
-            time.sleep(1)
-            nombreImagen = path + 'imagen{0}.0.png'.format(num)
-            cv.imwrite(nombreImagen,frame)
-            timesleep(1)
-            nombreImagen = path + 'imagen{0}.1.png'.format(num)
-            cv.imwrite(nombreImagen,frame)
-            num += 1
-        path = './calibrarParametros/*.png'
+        path = '/home/darkfarmbot/Desktop/darkFarmbot/calibrarParametros/'
+        #for posicion in posiciones:
+         #   pos = IrAPosicion(posicion)
+          #  realizarMovimiento(arduino,pos)
+           #  time.sleep(1)
+          #  nombreImagen = path + 'imagen{0}.0.png'.format(num)
+           # cv.imwrite(nombreImagen,frame)
+            #time.sleep(1)
+            #nombreImagen = path + 'imagen{0}.1.png'.format(num)
+            #cv.imwrite(nombreImagen,frame)
+            #num += 1
+        path = path + '*.png'
         mtx,dist = calibrarCamara(path)
-        np.savetxt('./calibrarParametros/mtx.txt',mtx,fmt='%d')
-        np.savetxt('./calibrarParametros/dist.txt',dist,fmt='%d')
+        np.savetxt('mtx.txt',mtx,fmt='%d')
+        np.savetxt('dist.txt',dist,fmt='%d')
         mtx = np.loadtxt('mtx.txt',dtype=int)
         dist = np.loadtxt('dist.txt',dtype=int)
-        resultadoCalibrado('resultado1.png','./calibrarParametros/imagenR.png',False,mtx,dist)
+        resultadoCalibrado('resultado1.png','/home/darkfarmbot/Desktop/darkFarmbot/calibrarParametros/imagen0.0.png',False,mtx,dist)
     isRun = False
+    arduino.close()
     cv.destroyAllWindows
