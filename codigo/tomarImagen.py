@@ -5,12 +5,13 @@ import serial
 import time
 from threading import Thread
 
-planta_1 = [190,125,0]
-planta_2 = [190,585,0]
-planta_3 = [530,585,0]
-planta_4 = [530,125,0]
-planta_5 = [870,125,0]
-planta_6 = [870,585,0]
+
+planta_1 = [190,125,70]
+planta_2 = [190,585,70]
+planta_3 = [530,585,70]
+planta_4 = [530,125,70]
+planta_5 = [870,125,70]
+planta_6 = [870,585,70]
 
 plantas = [planta_1,planta_2,planta_3,planta_4,planta_5,planta_6]
 
@@ -52,6 +53,7 @@ if __name__ == '__main__':
     thread.start()
 
     num_planta = 0
+    realizarMovimiento(arduino,'F22 P17 V1\r\n')
     realizarMovimiento(arduino,'G0 X100\r\n')
     
     for planta in plantas:
@@ -66,6 +68,7 @@ if __name__ == '__main__':
 
     realizarMovimiento(arduino,'G0 X100\r\n')
     realizarMovimiento(arduino,'G0\r\n')
+    realizarMovimiento(arduino,'F22 P17 V0\r\n')
     isRun = False
     thread.join()
     cv2.destroyAllWindows
