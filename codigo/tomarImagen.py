@@ -5,13 +5,13 @@ import serial
 import time
 from threading import Thread
 
-
-planta_1 = [190,125,70]
-planta_2 = [190,585,70]
-planta_3 = [530,585,70]
-planta_4 = [530,125,70]
-planta_5 = [870,125,70]
-planta_6 = [870,585,70]
+h = 50
+planta_1 = [190,125,h]
+planta_2 = [190,585,h]
+planta_3 = [550,585,h]
+planta_4 = [550,125,h]
+planta_5 = [870,160,h]
+planta_6 = [920,585,h]
 
 plantas = [planta_1,planta_2,planta_3,planta_4,planta_5,planta_6]
 
