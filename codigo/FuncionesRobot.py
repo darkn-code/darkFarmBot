@@ -53,7 +53,7 @@ if __name__ == '__main__':
         print('no se puede conectar con el arduino')
     time.sleep(1.0)
     
-    nombreArchivo = '/./gcode/SensorDeHumedad.csv'
+    nombreArchivo = '/home/darkfarmbot/Desktop/darkFarmbot//gcode/SensorDeHumedad.csv'
     leerArchivos(nombreArchivo)
     x = int(input('valor x: '))
     y = int(input('valor y: '))
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     print('humedad Del Suelo {0}%'.format(str(round(valorHumedad,2))))
     comando = IrAPosicion([x,y,2])
     realizarMovimiento(comando)
-    nombreArchivo = '/home/darkfarmbot/Desktop/darkFarmbot/regresoHumedad.csv'
+    nombreArchivo = '/home/darkfarmbot/Desktop/darkFarmbot/gcode/regresoHumedad.csv'
     leerArchivos(nombreArchivo)
     arduino.close()

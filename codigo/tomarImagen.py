@@ -5,7 +5,7 @@ import serial
 import time
 from threading import Thread
 
-h = 50
+h = 270
 planta_1 = [190,125,h]
 planta_2 = [190,585,h]
 planta_3 = [550,585,h]
@@ -13,7 +13,7 @@ planta_4 = [550,125,h]
 planta_5 = [870,160,h]
 planta_6 = [920,585,h]
 
-plantas = [planta_1,planta_2,planta_3,planta_4,planta_5,planta_6]
+plantas = [planta_1,planta_4,planta_5,planta_6,planta_3,planta_2]
 
 
 def IrAPosicion(pos):
@@ -53,19 +53,27 @@ if __name__ == '__main__':
     thread.start()
 
     num_planta = 0
+    arr_planta =[1,4,5,6,3,2]
     realizarMovimiento(arduino,'F22 P17 V1\r\n')
     realizarMovimiento(arduino,'G0 X100\r\n')
     
     for planta in plantas:
+        if num_planta == 3:
+            posBajada = IrAPosicion([970,160,100])
+            realizarMovimiento(arduino,posBajada)
+            posBajada = IrAPosicion([970,585,100])
+            realizarMovimiento(arduino,posBajada)
         posNueva = IrAPosicion(planta)
         realizarMovimiento(arduino,posNueva)
-        num_planta += 1
         path = '/home/darkfarmbot/Desktop/darkFarmbot/imagenes/'
-        nombre = 'planta_' + str(num_planta) + '-' + datetime.datetime.now().strftime('%d-%m-%y') + '.jpg'
+        nombre = 'planta_' + str(arr_planta[num_planta]) + '-' + datetime.datetime.now().strftime('%d-%m-%y') + '.jpg'
+        num_planta += 1
         #cv2.imshow(nombre,frame)
         nombre = path + nombre
         cv2.imwrite(nombre,frame)
-
+    
+    realizarMovimiento(arduino,'G0 X100 Y585 Z50\r\n')
+    realizarMovimiento(arduino,'G0 X100 Z50\r\n')
     realizarMovimiento(arduino,'G0 X100\r\n')
     realizarMovimiento(arduino,'G0\r\n')
     realizarMovimiento(arduino,'F22 P17 V0\r\n')
