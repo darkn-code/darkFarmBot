@@ -12,16 +12,8 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self,*args)
         
         self.setWindowTitle("Farmbot Chile Habanero")
-        self.setGeometry(50,25,500,500)
+        self.setGeometry(50,25,380,500)
         self.setStyleSheet(fondo)
-
-
-        #Imagen poli
-        poli = QLabel(self)
-        pixmap1 = QPixmap('./pictures/politecnico.png')
-        poli.setPixmap(pixmap1)
-        poli.resize(100,71)
-        poli.move(420,10)
 
         #Imagen cicata
         cicata = QLabel(self)
@@ -35,8 +27,8 @@ class MainWindow(QMainWindow):
         titulo = QLabel(self)
         titulo.setText("FarmBot Chile Habanero")
         titulo.setStyleSheet("color:#419f00;")
-        titulo.setFont(QFont('SansSerif',20))
-        titulo.resize(300,30)
+        titulo.setFont(QFont('SansSerif',15))
+        titulo.resize(250,30)
         titulo.move(130,30)
 
         #win = QWidget(self)
