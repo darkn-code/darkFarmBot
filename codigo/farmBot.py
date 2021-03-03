@@ -7,8 +7,10 @@ import sys
 def window():
     app = QApplication(sys.argv)
     win = QMainWindow()
-    win.setGeometry(50,25,700,1000)
+    win.setGeometry(100,25,700,1000)
     win.setWindowTitle("Farmbot Chile Habanero")
+    label = QLabel(win)
+    label.setText('hola')
 
     win.show()
     sys.exit(app.exec_())
