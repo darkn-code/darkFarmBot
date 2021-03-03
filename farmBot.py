@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self,*args)
         
         self.setWindowTitle("Farmbot Chile Habanero")
-        self.setGeometry(50,25,700,500)
+        self.setGeometry(50,25,500,500)
         self.setStyleSheet(fondo)
 
 
@@ -35,9 +35,9 @@ class MainWindow(QMainWindow):
         titulo = QLabel(self)
         titulo.setText("FarmBot Chile Habanero")
         titulo.setStyleSheet("color:white;")
-        titulo.setFont(QFont('SansSerif',25))
+        titulo.setFont(QFont('SansSerif',15))
         titulo.resize(355,30)
-        titulo.move(150,30)
+        titulo.move(100,30)
 
         #win = QWidget(self)
         #layout = QGridLayout()
