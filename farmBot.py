@@ -21,23 +21,23 @@ class MainWindow(QMainWindow):
         pixmap1 = QPixmap('./pictures/politecnico.png')
         poli.setPixmap(pixmap1)
         poli.resize(100,71)
-        poli.move(0,10)
+        poli.move(420,10)
 
         #Imagen cicata
         cicata = QLabel(self)
         pixmap2 = QPixmap('./pictures/cicata.png')
         cicata.setPixmap(pixmap2)
         cicata.resize(100,100)
-        cicata.move(570,0)
+        cicata.move(5,-5)
 
 
         #titulo Header
         titulo = QLabel(self)
         titulo.setText("FarmBot Chile Habanero")
-        titulo.setStyleSheet("color:white;")
-        titulo.setFont(QFont('SansSerif',15))
-        titulo.resize(355,30)
-        titulo.move(100,30)
+        titulo.setStyleSheet("color:#419f00;")
+        titulo.setFont(QFont('SansSerif',20))
+        titulo.resize(300,30)
+        titulo.move(130,30)
 
         #win = QWidget(self)
         #layout = QGridLayout()
