@@ -9,7 +9,7 @@ while (True):
  	ret,frame = cap.read()
 
  	#operacion que se realiza a cada frame
- 	frameR = cv2.resize(frame,(700,500))
+ 	frameR = cv2.resize(frame,(500,250))
 
  	#Se muestra cada frame
  	cv2.imshow('chile',frameR)
