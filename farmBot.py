@@ -130,9 +130,8 @@ class MainWindow(QMainWindow):
         self.bConectar.clicked.connect(self.conectarArduino)
         self.estiloLetraBlanco(self.bConectar)
 
-        tPuerto = QLineEdit("/dev/ttyACM0")
-        self.port = tPuerto.text()
-        self.estiloLetraBlanco(tPuerto)
+        self.tPuerto = QLineEdit("/dev/ttyACM0")
+        self.estiloLetraBlanco(self.tPuerto)
 
         bArriba = QPushButton()
         bArriba.setIcon(QIcon('./pictures/flechaArr.png'))
@@ -181,8 +180,8 @@ class MainWindow(QMainWindow):
         self.tData.setReadOnly(True)
         self.estiloLetraBlanco(self.tData)
 
-        tEnviar = QLineEdit()
-        self.estiloLetraBlanco(tEnviar)
+        self.tEnviar = QLineEdit()
+        self.estiloLetraBlanco(self.tEnviar)
         
 
         #shortcut
@@ -193,7 +192,7 @@ class MainWindow(QMainWindow):
         HLayout.addWidget(cicata)
         HLayout.addWidget(titulo)
         
-        ArLayout.addWidget(tPuerto,0,0)
+        ArLayout.addWidget(self.tPuerto,0,0)
         ArLayout.addWidget(self.bConectar,1,0)
 
         layout.setVerticalSpacing(0)
@@ -210,7 +209,7 @@ class MainWindow(QMainWindow):
         DLayout.addWidget(self.tData)
         
         FALayout.addWidget(bEnviar,0,1)
-        FALayout.addWidget(tEnviar,0,0)
+        FALayout.addWidget(self.tEnviar,0,0)
         
         BLayout.addWidget(bLuz)
         BLayout.addWidget(bAgua)
@@ -239,7 +238,8 @@ class MainWindow(QMainWindow):
         widget.setFont(letraTexto)
     
     def mandarDatos(self):
-        dato = self.tData.text()
+        dato = self.tEnviar.text()
+        print(dato+'\r\n')
         self.farmbot.enviarDatos(dato+'\r\n')
 
     def leerDatos(self):
@@ -250,22 +250,24 @@ class MainWindow(QMainWindow):
             self.data = self.arduinoString.decode('utf-8',errors='replace')
             self.tData.setText(self.data)
 
+        self.farmbot.arduino.close()
+
 
     def conectarArduino(self):
+        self.port = self.tPuerto.text()
         print(self.port)
         if self.bConectar.text() == 'Conectar':
             try:
                 self.isRun = True
                 self.farmbot = arduino(self.port)
-                self.thread = Thread(target=leerDatos)
+                self.thread = Thread(target=self.leerDatos)
                 self.thread.start()
                 self.bConectar.setText('Desconectar')
                 self.bConectar.setStyleSheet('color:red')
-            except:
-                print('No se pudo coenctar al arduino')
+            except Exception as e:
+                print(e)
         else:
             self.isRun = False
-            self.farmbot.close()
             self.bConectar.setText('Conectar')
             self.bConectar.setStyleSheet(ColorBotones)
                     
@@ -274,6 +276,5 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = MainWindow()
     main.show()
-    main.isRun = False
-    main.farmbot.close()
     sys.exit(app.exec_())
+    main.isRun = False
