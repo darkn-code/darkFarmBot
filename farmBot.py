@@ -11,6 +11,7 @@ from codigo.FuncionesRobot import *
 
 colorLetra = "color:#419f00;"
 ColorBotones = "color:white;"
+ColorRojo = 'color:red;'
 border = "border: 0px solid black;"
 fondo = "background-color:#203500;" + ColorBotones 
 borderG = 'border:2px solid white;'
@@ -157,14 +158,17 @@ class MainWindow(QMainWindow):
         bAbajoZ.setIcon(QIcon('./pictures/flechaAba.png'))
         bAbajoZ.clicked.connect(self.moverZNegativo)
 
-        bLuz = QPushButton('Luz')
-        self.estiloLetraBlanco(bLuz)
+        self.bLuz = QPushButton('Luz')
+        self.bLuz.clicked.connect(self.PinLuz)
+        self.estiloLetraBlanco(self.bLuz)
         
-        bAgua = QPushButton('Agua')
-        self.estiloLetraBlanco(bAgua)
+        self.bAgua = QPushButton('Agua')
+        self.bAgua.clicked.connect(self.PinAgua)
+        self.estiloLetraBlanco(self.bAgua)
          
-        bVacio = QPushButton('Bomba Vacio')
-        self.estiloLetraBlanco(bVacio)
+        self.bVacio = QPushButton('Bomba Vacio')
+        self.bVacio.clicked.connect(self.PinBombaVacio)
+        self.estiloLetraBlanco(self.bVacio)
       
         bEnviar = QPushButton('Enviar')
         bEnviar.clicked.connect(self.mandarDatos)
@@ -197,6 +201,15 @@ class MainWindow(QMainWindow):
         #shortcut
         sConectar = QShortcut(QKeySequence("C"),win)
         sConectar.activated.connect(self.conectarArduino)
+        
+        sLuz = QShortcut(QKeySequence('L'),win)
+        sLuz.activated.connect(self.PinLuz)
+        
+        sAgua = QShortcut(QKeySequence('K'),win)
+        sAgua.activated.connect(self.PinAgua)
+        
+        sBomba = QShortcut(QKeySequence('J'),win)
+        sBomba.activated.connect(self.PinBombaVacio)
         
         sMandarDatos = QShortcut(QKeySequence("Enter"),win)
         sMandarDatos.activated.connect(self.mandarDatos)
@@ -242,9 +255,9 @@ class MainWindow(QMainWindow):
         FALayout.addWidget(bEnviar,0,1)
         FALayout.addWidget(self.tEnviar,0,0)
         
-        BLayout.addWidget(bLuz)
-        BLayout.addWidget(bAgua)
-        BLayout.addWidget(bVacio)
+        BLayout.addWidget(self.bLuz)
+        BLayout.addWidget(self.bAgua)
+        BLayout.addWidget(self.bVacio)
         
         ALayout.addWidget(bRegar)
         ALayout.addWidget(bSembrar)
@@ -286,6 +299,7 @@ class MainWindow(QMainWindow):
         else:
             self.y = 600
             print('se excedio de los limites')
+    
     def moverYNegativo(self):
         self.y = self.y - self.step
         if self.y >= 0:
@@ -294,6 +308,47 @@ class MainWindow(QMainWindow):
             self.y = 0
             print('se excedio de los limites')
     
+    def enviarFarmbot(self,mensaje):
+        self.farmbot.enviarDatos(mensaje)
+        self.tData.setText(mensaje)
+
+
+    def PinLuz(self):
+        if self.bLuz.text() == 'Luz':
+            self.bLuz.setText('Apagar Luz')
+            self.bLuz.setStyleSheet(ColorRojo)
+            valorPin = DarValorPin(9,1,0)
+            self.enviarFarmbot(valorPin)
+        else:
+            self.bLuz.setStyleSheet(ColorBotones)
+            self.bLuz.setText('Luz') 
+            valorPin = DarValorPin(9,0,0)
+            self.enviarFarmbot(valorPin)
+    
+    def PinAgua(self):
+        if self.bAgua.text() == 'Agua':
+            self.bAgua.setText('Apagar Agua')
+            self.bAgua.setStyleSheet(ColorRojo)
+            valorPin = DarValorPin(8,1,0)
+            self.enviarFarmbot(valorPin)
+        else:
+            self.bAgua.setStyleSheet(ColorBotones)
+            self.bAgua.setText('Agua') 
+            valorPin = DarValorPin(8,0,0)
+            self.enviarFarmbot(valorPin)
+    
+    def PinBombaVacio(self):
+        if self.bVacio.text() == 'Bomba Vacio':
+            self.bVacio.setText('Apagar Bomba')
+            self.bVacio.setStyleSheet(ColorRojo)
+            valorPin = DarValorPin(10,1,0)
+            self.enviarFarmbot(valorPin)
+        else:
+            self.bVacio.setStyleSheet(ColorBotones)
+            self.bVacio.setText('Bomba Vacio') 
+            valorPin = DarValorPin(10,0,0)
+            self.enviarFarmbot(valorPin)
+
     def moverZPositivo(self):
         self.z = self.z + self.step
         if self.z <= 300:
@@ -311,19 +366,15 @@ class MainWindow(QMainWindow):
 
     def moverPos(self):
             posicion = IrAPosicion([self.x,self.y,self.z])
-            print(posicion)
-            self.farmbot.enviarDatos(posicion)
-
-
+            self.enviarFarmbot(posicion)
 
     def estiloLetraBlanco(self,widget):
         widget.setStyleSheet(ColorBotones)
         widget.setFont(letraTexto)
     
     def mandarDatos(self):
-        dato = self.tEnviar.text()
-        self.tData.setText(dato)
-        self.farmbot.enviarDatos(dato+'\r\n')
+        dato = self.tEnviar.text() +'\r\n'
+        self.enviarFarmbot(dato)
 
     def leerDatos(self):
         time.sleep(1.0)
@@ -352,7 +403,7 @@ class MainWindow(QMainWindow):
                 self.thread = Thread(target=self.leerDatos)
                 self.thread.start()
                 self.bConectar.setText('Desconectar')
-                self.bConectar.setStyleSheet('color:red')
+                self.bConectar.setStyleSheet(ColorRojo)
             except Exception as e:
                 print(e)
         else:
