@@ -24,6 +24,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.port = ''
         self.isRun = True
+        self.step = 20
+        self.x = 0
+        self.y = 0
+        self.z = 0
         self.setWindowTitle("Farmbot Chile Habanero")
         self.setStyleSheet(fondo)
 
@@ -135,17 +139,23 @@ class MainWindow(QMainWindow):
 
         bArriba = QPushButton()
         bArriba.setIcon(QIcon('./pictures/flechaArr.png'))
+        bArriba.clicked.connect(self.moverXPositivo)
         bAbajo = QPushButton()
         bAbajo.setIcon(QIcon('./pictures/flechaAba.png'))
+        bAbajo.clicked.connect(self.moverXNegativo)
         bDerecha = QPushButton()
         bDerecha.setIcon(QIcon('./pictures/flechaDer.png'))
+        bDerecha.clicked.connect(self.moverYPositivo)
         bIzquierda = QPushButton()
         bIzquierda.setIcon(QIcon('./pictures/flechaIzq.png'))
+        bIzquierda.clicked.connect(self.moverYNegativo)
         
         bArribaZ = QPushButton()
         bArribaZ.setIcon(QIcon('./pictures/flechaArr.png'))
+        bArribaZ.clicked.connect(self.moverZPositivo)
         bAbajoZ = QPushButton()
         bAbajoZ.setIcon(QIcon('./pictures/flechaAba.png'))
+        bAbajoZ.clicked.connect(self.moverZNegativo)
 
         bLuz = QPushButton('Luz')
         self.estiloLetraBlanco(bLuz)
@@ -185,8 +195,29 @@ class MainWindow(QMainWindow):
         
 
         #shortcut
-        sConectar = QShortcut(QKeySequence("Enter"),win)
-        sConectar.activated.connect(self.mandarDatos)
+        sConectar = QShortcut(QKeySequence("C"),win)
+        sConectar.activated.connect(self.conectarArduino)
+        
+        sMandarDatos = QShortcut(QKeySequence("Enter"),win)
+        sMandarDatos.activated.connect(self.mandarDatos)
+
+        sMoverXPos = QShortcut(QKeySequence('W'),win)
+        sMoverXPos.activated.connect(self.moverXPositivo)
+        
+        sMoverXNeg = QShortcut(QKeySequence('S'),win)
+        sMoverXNeg.activated.connect(self.moverXNegativo)
+        
+        sMoverYPos = QShortcut(QKeySequence('D'),win)
+        sMoverYPos.activated.connect(self.moverYPositivo)
+        
+        sMoverYNeg = QShortcut(QKeySequence('A'),win)
+        sMoverYNeg.activated.connect(self.moverYNegativo)
+        
+        sMoverZPos = QShortcut(QKeySequence('R'),win)
+        sMoverZPos.activated.connect(self.moverZPositivo)
+        
+        sMoverZNeg = QShortcut(QKeySequence('F'),win)
+        sMoverZNeg.activated.connect(self.moverZNegativo)
             
         #LAYOUUT
         HLayout.addWidget(cicata)
@@ -232,6 +263,58 @@ class MainWindow(QMainWindow):
         if okPressed:
             print(i)
 
+    def moverXPositivo(self):
+        self.x = self.x + self.step
+        if self.x <= 900:
+            self.moverPos()
+        else:
+            self.x = 900
+            print('se excedio de los limites')
+        
+    def moverXNegativo(self):
+        self.x = self.x - self.step
+        if self.x >= 0:
+            self.moverPos()
+        else:
+            self.x = 0
+            print('se excedio de los limites')
+   
+    def moverYPositivo(self):
+        self.y = self.y + self.step
+        if self.y <= 600:
+            self.moverPos()
+        else:
+            self.y = 600
+            print('se excedio de los limites')
+    def moverYNegativo(self):
+        self.y = self.y - self.step
+        if self.y >= 0:
+            self.moverPos()
+        else:
+            self.y = 0
+            print('se excedio de los limites')
+    
+    def moverZPositivo(self):
+        self.z = self.z + self.step
+        if self.z <= 300:
+            self.moverPos()
+        else:
+            self.z = 300
+            print('se excedio de los limites')
+    def moverZNegativo(self):
+        self.z = self.z - self.step
+        if self.z >= 0:
+            self.moverPos()
+        else:
+            self.z = 0
+            print('se excedio de los limites')
+
+    def moverPos(self):
+            posicion = IrAPosicion([self.x,self.y,self.z])
+            print(posicion)
+            #self.farmbot.enviarDatos(posicion)
+
+
 
     def estiloLetraBlanco(self,widget):
         widget.setStyleSheet(ColorBotones)
@@ -248,9 +331,15 @@ class MainWindow(QMainWindow):
         while self.isRun:
             self.arduinoString = self.farmbot.recibirDatos()
             self.data = self.arduinoString.decode('utf-8',errors='replace')
-            self.tData.setText(self.data)
+            self.tData.setText(self.data[0:15])
 
         self.farmbot.arduino.close()
+
+
+    def closeEvent(self,event):
+        self.isRun = False
+        print("Estoy cerrando el programa")
+        time.sleep(0.5)
 
 
     def conectarArduino(self):
@@ -277,4 +366,3 @@ if __name__ == '__main__':
     main = MainWindow()
     main.show()
     sys.exit(app.exec_())
-    main.isRun = False
