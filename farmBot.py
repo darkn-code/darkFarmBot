@@ -312,7 +312,7 @@ class MainWindow(QMainWindow):
     def moverPos(self):
             posicion = IrAPosicion([self.x,self.y,self.z])
             print(posicion)
-            #self.farmbot.enviarDatos(posicion)
+            self.farmbot.enviarDatos(posicion)
 
 
 
@@ -322,7 +322,7 @@ class MainWindow(QMainWindow):
     
     def mandarDatos(self):
         dato = self.tEnviar.text()
-        print(dato+'\r\n')
+        self.tData.setText(dato)
         self.farmbot.enviarDatos(dato+'\r\n')
 
     def leerDatos(self):
@@ -331,7 +331,7 @@ class MainWindow(QMainWindow):
         while self.isRun:
             self.arduinoString = self.farmbot.recibirDatos()
             self.data = self.arduinoString.decode('utf-8',errors='replace')
-            self.tData.setText(self.data[0:15])
+            print(self.data)
 
         self.farmbot.arduino.close()
 
