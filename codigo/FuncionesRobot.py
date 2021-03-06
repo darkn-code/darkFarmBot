@@ -4,6 +4,7 @@ import datetime
 import serial
 import time
 import csv
+import argparse
 
 
 def IrAPosicion(pos):
@@ -53,10 +54,16 @@ if __name__ == '__main__':
         print('no se puede conectar con el arduino')
     time.sleep(1.0)
     
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--x-value",default=100, type=int)
+    parser.add_argument("--y-value",default=100, type=int)
+    args = parser.parse_args()
     nombreArchivo = '/home/darkfarmbot/Desktop/darkFarmbot/gcode/SensorDeHumedad.csv'
+    x = args.x_value
+    y = args.y_value
+    print(x)
+    print(y)
     leerArchivos(nombreArchivo)
-    x = int(input('valor x: '))
-    y = int(input('valor y: '))
     comando = SetearPin(59,0)
     realizarMovimiento(comando)
     comando = IrAPosicion([x,y,2])

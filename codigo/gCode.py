@@ -3,17 +3,10 @@ import serial
 import numpy as np
 import cv2
 import time
+import argparse
 from threading import Thread
-
+import sys
 arduinoString = []
-
-def leerDatos():
-
-    time.sleep(1.0)
-    arduino.reset_input_buffer()
-    while isRun:
-        arduinoString = arduino.readline()
-        print(arduinoString)
 
 def ejecutarGcode():
     with open(filename,mode='r') as f:
@@ -30,18 +23,16 @@ def ejecutarGcode():
             
 if __name__ == '__main__':
     global filename
-    isRun = True
     try:
         arduino = serial.Serial('/dev/ttyACM0',115200)
     except:
         print('No se pudo conectar al arduino')
-
-    filename = input('Nombre del archivo Gcode: ')
+    
+    argv = sys.argv
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("gcode_dir",nargs='?')
+    args = argparser.parse_args(argv[1:])
+    filename = args.gcode_dir
     filename = './gcode/' + filename + '.csv'
-    #thread = Thread(target=leerDatos)
-    #thread.start()
     ejecutarGcode()
-    isRun = False
-    #thread.join()
     arduino.close()
-

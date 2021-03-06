@@ -5,7 +5,7 @@ import serial
 import time
 from threading import Thread
 
-h = 270
+h = 300
 planta_1 = [190,125,h]
 planta_2 = [190,585,h]
 planta_3 = [550,585,h]
@@ -59,9 +59,9 @@ if __name__ == '__main__':
     
     for planta in plantas:
         if num_planta == 3:
-            posBajada = IrAPosicion([970,160,100])
+            posBajada = IrAPosicion([970,160,140])
             realizarMovimiento(arduino,posBajada)
-            posBajada = IrAPosicion([970,585,100])
+            posBajada = IrAPosicion([970,585,140])
             realizarMovimiento(arduino,posBajada)
         posNueva = IrAPosicion(planta)
         realizarMovimiento(arduino,posNueva)

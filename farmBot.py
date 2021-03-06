@@ -5,6 +5,7 @@ from threading import Thread
 import serial
 import time
 import sys
+import os
 
 from codigo.arduino import *
 from codigo.FuncionesRobot import *
@@ -175,16 +176,19 @@ class MainWindow(QMainWindow):
         self.estiloLetraBlanco(bEnviar)
 
         bRegar = QPushButton('Regar')
+        bRegar.clicked.connect(self.mRegar)
         self.estiloLetraBlanco(bRegar)
 
         bSembrar = QPushButton('Sembrar')
+        bSembrar.clicked.connect(self.mSembrar)
         self.estiloLetraBlanco(bSembrar)
 
         bHumedad = QPushButton('Humedad')
-        bHumedad.clicked.connect(self.getInteger)
+        bHumedad.clicked.connect(self.mHumedad)
         self.estiloLetraBlanco(bHumedad)
         
         bCamara = QPushButton('Camara')
+        bCamara.clicked.connect(self.mCamara)
         self.estiloLetraBlanco(bCamara)
 
         bAi = QPushButton('AI')
@@ -210,6 +214,18 @@ class MainWindow(QMainWindow):
         
         sBomba = QShortcut(QKeySequence('J'),win)
         sBomba.activated.connect(self.PinBombaVacio)
+
+        sRegar = QShortcut(QKeySequence('B'),win)
+        sRegar.activated.connect(self.mRegar)
+        
+        sSembrar = QShortcut(QKeySequence('N'),win)
+        sSembrar.activated.connect(self.mSembrar)
+        
+        sHumedad = QShortcut(QKeySequence('M'),win)
+        sHumedad.activated.connect(self.mHumedad)
+        
+        sCamara = QShortcut(QKeySequence('Z'),win)
+        sCamara.activated.connect(self.mCamara)
         
         sMandarDatos = QShortcut(QKeySequence("Enter"),win)
         sMandarDatos.activated.connect(self.mandarDatos)
@@ -270,11 +286,12 @@ class MainWindow(QMainWindow):
         win.setFixedSize(gridLayout.sizeHint())
         self.setFixedSize(gridLayout.sizeHint()) 
 
-    def getInteger(self):
+    def getInteger(self,varName='x'):
         ventanaDialogo = QInputDialog()
-        i,okPressed = ventanaDialogo.getInt(self,"Posicion","X:",100,0,500,1)
+        i,okPressed = ventanaDialogo.getInt(self,"Posicion",f"{varName}:",100,0,500,1)
         if okPressed:
             print(i)
+            return i
 
     def moverXPositivo(self):
         self.x = self.x + self.step
@@ -308,10 +325,9 @@ class MainWindow(QMainWindow):
             self.y = 0
             print('se excedio de los limites')
     
-    def enviarFarmbot(self,mensaje):
+    def enviarFarmbot(self,mensaje): 
         self.farmbot.enviarDatos(mensaje)
         self.tData.setText(mensaje)
-
 
     def PinLuz(self):
         if self.bLuz.text() == 'Luz':
@@ -386,7 +402,29 @@ class MainWindow(QMainWindow):
 
         self.farmbot.arduino.close()
 
+    def llamarArchivo(self,nombreDeCodigo,pCodigo='',dirA=''):
+        try:
+            self.farmbot.arduino.close()
+            print('Puerto de arduino cerrado')
+        except:
+            print('El puerto de arduino ya esta cerrado')
+        print(nombreDeCodigo)
+        os.system(pCodigo+f'python3 {dirA}/codigo/{nombreDeCodigo}')
+    
+    def mRegar(self):
+        self.llamarArchivo('gCode.py regar')
 
+    def mSembrar(self):
+        self.llamarArchivo('gCode.py sembrar')
+    
+    def mHumedad(self):
+        x = self.getInteger()
+        y = self.getInteger('y')
+        self.llamarArchivo(f'FuncionesRobot.py --x-value={x} --y-value={y}','cd ~;','Desktop/darkFarmbot')
+
+    def mCamara(self):
+        self.llamarArchivo('AperturaDeCamara.py')
+    
     def closeEvent(self,event):
         self.isRun = False
         print("Estoy cerrando el programa")
