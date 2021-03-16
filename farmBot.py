@@ -402,7 +402,7 @@ class MainWindow(QMainWindow):
 
         self.farmbot.arduino.close()
 
-    def llamarArchivo(self,nombreDeCodigo,pCodigo='',dirA=''):
+    def llamarArchivo(self,nombreDeCodigo,pCodigo='',dirA='.'):
         try:
             self.farmbot.arduino.close()
             print('Puerto de arduino cerrado')
