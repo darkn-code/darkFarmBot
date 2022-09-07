@@ -5,7 +5,7 @@ import serial
 import time
 from threading import Thread
 
-h = 300
+h = 0
 planta_1 = [190,125,h]
 planta_2 = [190,585,h]
 planta_3 = [550,585,h]
@@ -58,11 +58,11 @@ if __name__ == '__main__':
     realizarMovimiento(arduino,'G0 X100\r\n')
     
     for planta in plantas:
-        if num_planta == 3:
-            posBajada = IrAPosicion([970,160,140])
-            realizarMovimiento(arduino,posBajada)
-            posBajada = IrAPosicion([970,585,140])
-            realizarMovimiento(arduino,posBajada)
+        #if num_planta == 3:
+           # posBajada = IrAPosicion([970,160,250])
+           # realizarMovimiento(arduino,posBajada)
+           # posBajada = IrAPosicion([970,585,250])
+           # realizarMovimiento(arduino,posBajada)
         posNueva = IrAPosicion(planta)
         realizarMovimiento(arduino,posNueva)
         path = '/home/darkfarmbot/Desktop/darkFarmbot/imagenes/'
@@ -72,9 +72,9 @@ if __name__ == '__main__':
         nombre = path + nombre
         cv2.imwrite(nombre,frame)
     
-    realizarMovimiento(arduino,'G0 X100 Y585 Z50\r\n')
-    realizarMovimiento(arduino,'G0 X100 Z50\r\n')
-    realizarMovimiento(arduino,'G0 X100\r\n')
+    realizarMovimiento(arduino,'G0 X200 Y585 Z0\r\n')
+    realizarMovimiento(arduino,'G0 X200 Z0\r\n')
+    realizarMovimiento(arduino,'G0 X200\r\n')
     realizarMovimiento(arduino,'G0\r\n')
     realizarMovimiento(arduino,'F22 P17 V0\r\n')
     isRun = False
